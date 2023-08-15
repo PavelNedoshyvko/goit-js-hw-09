@@ -12,12 +12,12 @@ function onStartBtnClick() {
 	intervalId = setInterval(() => {
 		document.body.style.backgroundColor = getRandomHexColor();
 	}, 1000);
-	refs.startBtn.setAttribute("disabled", "disabled");
+	refs.startBtn.disabled = true;
 };
 
 function onStopBtnClick() { 
 	clearInterval(intervalId);
-	refs.startBtn.removeAttribute("disabled");
+	refs.startBtn.disabled = false;
 };
 
 function getRandomHexColor() {
