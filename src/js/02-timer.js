@@ -12,20 +12,21 @@ const refs = {
 
 refs.startBtn.disabled = true;
 
+let userSelectedDate = null;
+
 flatpickr("#datetime-picker", {
 	enableTime: true,
 	time_24hr: true,
 	defaultDate: new Date(),
 	minuteIncrement: 1,
 	onClose(selectedDates) {
-		if (selectedDates[0] < new Date()) {
+		userSelectedDate = selectedDates[0];
+		if (userSelectedDate < new Date()) {
 			Notify.warning("Please choose a date in the future", {
 				warning: {
     			background: '#ff5e1a',
     			textColor: '#000',
     			notiflixIconColor: '#000',
-    			fontAwesomeIconColor: 'rgba(0,0,0,0.2)',
-    			backOverlayColor: 'rgba(238,191,49,0.2)',
   				},
 				width: '550px',
 				fontSize: '32px',
@@ -35,10 +36,13 @@ flatpickr("#datetime-picker", {
 		}
 		refs.startBtn.disabled = false;
 		refs.startBtn.addEventListener('click', onStartBtnClick);
+	},
+});
 
-		function onStartBtnClick() {
+
+function onStartBtnClick() {
 	const intervalId = setInterval(() => {
-		const ms = selectedDates[0] - new Date();
+		const ms = userSelectedDate - new Date();
 		const { days, hours, minutes, seconds } = convertMs(ms);
 		refs.days.textContent = addLeadingZero(days);
 		refs.hours.textContent = addLeadingZero(hours);
@@ -48,10 +52,8 @@ flatpickr("#datetime-picker", {
 			clearInterval(intervalId);
 		}
 	}, 1000);
-		};
-	},
-});
-
+};
+		
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
@@ -70,8 +72,8 @@ function convertMs(ms) {
   const seconds = Math.floor((((ms % day) % hour) % minute) / second);
 
   return { days, hours, minutes, seconds };
-}
+};
 
 function addLeadingZero(value) {
 	return value.toString().padStart(2, '0');
-}
+};
