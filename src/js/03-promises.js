@@ -6,7 +6,6 @@ const refs = {
 };
 
 refs.form.addEventListener('submit', onFormSubmit);
-refs.createPromisesBtn.disabled = false;
 
 function onFormSubmit(evt) {
 	evt.preventDefault();
