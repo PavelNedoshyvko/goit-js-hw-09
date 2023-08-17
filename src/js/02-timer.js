@@ -53,6 +53,7 @@ function onStartBtnClick() {
 		refs.seconds.textContent = addLeadingZero(seconds);
 		if (ms < 1000) {
 			clearInterval(intervalId);
+			refs.input.disabled = false;
 		}
 	}, 1000);
 };
