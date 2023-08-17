@@ -3,12 +3,15 @@ import "flatpickr/dist/flatpickr.min.css";
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 const refs = {
+	input: document.querySelector('#datetime-picker'),
 	startBtn: document.querySelector('[data-start]'),
 	days: document.querySelector('[data-days]'),
 	hours: document.querySelector('[data-hours]'),
 	minutes: document.querySelector('[data-minutes]'),
 	seconds: document.querySelector('[data-seconds]'),
 };
+
+refs.startBtn.addEventListener('click', onStartBtnClick);
 
 refs.startBtn.disabled = true;
 
@@ -35,12 +38,12 @@ flatpickr("#datetime-picker", {
 			return;
 		}
 		refs.startBtn.disabled = false;
-		refs.startBtn.addEventListener('click', onStartBtnClick);
 	},
 });
 
-
 function onStartBtnClick() {
+	refs.input.disabled = true;
+	refs.startBtn.disabled = true;
 	const intervalId = setInterval(() => {
 		const ms = userSelectedDate - new Date();
 		const { days, hours, minutes, seconds } = convertMs(ms);
@@ -54,7 +57,6 @@ function onStartBtnClick() {
 	}, 1000);
 };
 		
-
 function convertMs(ms) {
   // Number of milliseconds per unit of time
   const second = 1000;
