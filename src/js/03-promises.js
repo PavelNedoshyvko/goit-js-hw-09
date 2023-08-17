@@ -5,38 +5,30 @@ const refs = {
 	createPromisesBtn: document.querySelector('.form > button'),
 };
 
-refs.createPromisesBtn.addEventListener('click', onCreatePromisesBtnClick);
+refs.form.addEventListener('submit', onFormSubmit);
+refs.createPromisesBtn.disabled = false;
 
-function onCreatePromisesBtnClick(evt) {
+function onFormSubmit(evt) {
 	evt.preventDefault();
-
-	let firstDelay = refs.form.elements.delay.valueAsNumber;
+	
+	let delay = refs.form.elements.delay.valueAsNumber;
 	const delayStep = refs.form.elements.step.valueAsNumber;
 	const amount = refs.form.elements.amount.valueAsNumber;
-	let position = 0;
-
+	refs.createPromisesBtn.disabled = true;
 	setTimeout(() => {
-		const intervalId = setInterval(() => {
-			position += 1;
-			if (position === amount) {
-					clearInterval(intervalId);
-				};
-				createPromise(position, firstDelay)
-					.then(({ position, delay }) => {
-						Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`,
-							{
-   				 			timeout: 5000,
-  						},);
-					})
-					.catch(({ position, delay }) => {
-						Notify.failure(`❌ Rejected promise ${position} in ${delay}ms`,
-							{
-    						timeout: 5000,
-  						},);
-					});
-							firstDelay += delayStep;
-		}, delayStep);
-	}, firstDelay);
+		refs.createPromisesBtn.disabled = false;
+	}, delay + delayStep*amount)
+	
+	for (let position = 1; position <= amount; position += 1) {
+		createPromise(position, delay)
+			.then(({ position, delay }) => {
+				Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`);
+			})
+			.catch(({ position, delay }) => {
+				Notify.failure(`❌ Rejected promise ${position} in ${delay}ms`);
+			});
+		delay += delayStep;
+	}
 };
 
 
@@ -44,9 +36,13 @@ function createPromise(position, delay) {
 	const shouldResolve = Math.random() > 0.3;
 	return new Promise((resolve, reject) => {
 		if (shouldResolve) {
-			resolve({ position, delay });
-  } else {
-			reject({ position, delay });
-  }
-	})
+			setTimeout(() => {
+				resolve({ position, delay });
+				}, delay);
+		} else {
+			setTimeout(() => {
+				reject({ position, delay });
+			}, delay)
+		};
+	});
 };
